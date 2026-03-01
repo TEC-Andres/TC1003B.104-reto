@@ -28,19 +28,49 @@ class LatexProjectCompiler:
         os.makedirs(self.logs_dir, exist_ok=True)
 
     def compile_latex(self):
+        def run_cmd(cmd):
+            subprocess.run(cmd, cwd=self.project_dir, check=True)
+
         error_occurred = False
-        for _ in range(2):
-            try:
-                subprocess.run([
-                    'pdflatex',
-                    '-interaction=nonstopmode',
-                    '-output-directory', self.project_dir,
-                    self.main_tex
-                ], cwd=self.project_dir, check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"LaTeX compilation error (exit code {e.returncode}). Attempting to move PDF if it exists...")
-                error_occurred = True
-                break
+        base_name = os.path.splitext(os.path.basename(self.main_tex))[0]
+
+        try:
+            # Pass 1: generate .aux/.toc and (if biblatex is used) the .bcf
+            run_cmd([
+                'pdflatex',
+                '-interaction=nonstopmode',
+                '-output-directory', self.project_dir,
+                self.main_tex,
+            ])
+
+            # If biblatex is present, pdflatex creates a .bcf file. biber reads it
+            # and produces the .bbl that LaTeX uses to print the bibliography.
+            bcf_path = os.path.join(self.project_dir, f"{base_name}.bcf")
+            if os.path.exists(bcf_path):
+                run_cmd([
+                    'biber',
+                    '--input-directory', self.project_dir,
+                    '--output-directory', self.project_dir,
+                    base_name,
+                ])
+
+            # Pass 2/3: resolve ToC, cross-refs, and bibliography
+            run_cmd([
+                'pdflatex',
+                '-interaction=nonstopmode',
+                '-output-directory', self.project_dir,
+                self.main_tex,
+            ])
+            run_cmd([
+                'pdflatex',
+                '-interaction=nonstopmode',
+                '-output-directory', self.project_dir,
+                self.main_tex,
+            ])
+        except subprocess.CalledProcessError as e:
+            print(f"LaTeX/Biber compilation error (exit code {e.returncode}). Attempting to move PDF if it exists...")
+            error_occurred = True
+
         return error_occurred
 
     def move_pdf(self, error_occurred):
@@ -62,7 +92,12 @@ class LatexProjectCompiler:
                 print(f"Moved {fname} to __logs__ directory.")
         # Also move project-related run files (e.g., main.bcf, main.run.xml)
         base_name = os.path.splitext(os.path.basename(self.main_tex))[0]
-        extra_files = [f"{base_name}.bcf", f"{base_name}.run.xml"]
+        extra_files = [
+            f"{base_name}.bcf",
+            f"{base_name}.bbl",
+            f"{base_name}.blg",
+            f"{base_name}.run.xml",
+        ]
         for fname in extra_files:
             src = os.path.join(self.project_dir, fname)
             dst = os.path.join(self.logs_dir, fname)

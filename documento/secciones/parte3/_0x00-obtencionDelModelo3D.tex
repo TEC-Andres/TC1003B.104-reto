@@ -1,0 +1,114 @@
+\inicializarSeccion{Obtencin del modelo 3D}
+
+El proceso para crear este sólido de revolución fue un poco complejo. Primero en geogebra trazamos 20 puntos guiándonos con un dibujo hecho por nosotros de cómo creíamos que debía verse el producto final. Después, sobre estos puntos y con la ayuda de la función (fórmula) “Polynomial” en geogebra fuimos tomando los máximos puntos posibles para ir creando funciones que se acoplaron al dibujo. A continuación la captura de todos los puntos (en matlab), funciones (en geogebra), los mismos puntos y funciones ya trazados en el plano cartesiano de geogebra y la figura en 2D:
+
+
+Estos serían los puntos en $x$:
+\begin{lstlisting}[style=Matlab-editor]
+Px = [0.102; %C- 1
+    0.282; %D- 2
+    1.124; %E - 3
+    2.346; %F - 4
+    3.488; %G - 5
+    4.690; %H - 6
+    6.393; %I - 7
+    6.977; %J - 8
+    7.232; %K - 9
+    7.526; %L - 10
+    8; %M - 11
+    8.505; %N - 12
+    9.171; %O- 13
+    9.798; %P- 14
+    10.60; %Q-15
+    11.13; %R - 16
+    11.502; %S - 17
+    12.0702; %T- 18
+    12.579; %U - 19
+    13.245 %V - 20
+    ];
+\end{lstlisting}
+
+
+Y estos serían los puntos en $y$:
+\begin{lstlisting}[style=Matlab-editor]
+    %puntos Y
+Py = [4.497; %C- 1
+    5.398; %D- 2
+    5.959; %E - 3
+    6.039; %F - 4
+    6.0199; %G - 5
+    6.0199; %H - 6
+    6.0999; %I - 7
+    6.445; %J - 8
+    7.052; %K - 9
+    7.6; %L - 10
+    8.0121; %M - 11
+    8.0121; %N - 12
+    8.0121; %O- 13
+    8.0121; %P- 14
+    8.0121; %Q-15
+    8.286; %R - 16
+    8.717; %S - 17
+    8.717; %T- 18
+    8.717; %U - 19
+    8.717 %V - 20
+    ];
+\end{lstlisting}
+
+Las funciones que se obtuvieron fueron las siguientes:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{\nat{funcionesUno.png}}
+    \caption{Primeras cinco funciones del modelo 2D.}
+    \label{fig:funcionesGeogebra}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{\nat{funcionesDos.png}}
+    \caption{Las últimas tres funciones del modelo 2D.}
+    \label{fig:funcionesGeogebraDos}
+\end{figure}
+
+Y ya trazados en el plano cartesiano de geogebra se ve de la siguiente manera:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{\nat{funcion2DFinal.png}}
+    \caption{Función final del modelo 2D.}
+    \label{fig:funcion2DFinal}
+\end{figure}
+
+Básicamente estas funciones seccionadas y juntas son lo que podemos ver en la gráfica 2D. Para pasar todas estas funciones a una gráfica en matlab el proceso fue un poco más sencillo. Como primer paso hicimos dos matrices con cada uno de los 20 puntos en su respectivo eje, la primera matriz llamada $P_x$ y la segunda $P_y$, después con estos puntos registrados en estas matrices y sabiendo cuales puntos tomaba cada función, simplemente hicimos 4 líneas de código para cada función, donde empezábamos con 2 matrices $x$ y $y$ donde tenían desde el punto inicial hasta el punto final de esa función, después $x_1$ siendo otra matriz que iba desde el punto inicial hasta el final junto con la variable delta la cual daba saltos de 0.01, y finalmente $y_1$ donde se graficaba usando la función spline y dandole como parámetros $x$, $y$ y $x_1$, este mismo código lo reescribimos para cada una de las 7 funciones con sus respectivos datos. A continuación una foto de la sección de código mencionada: 
+
+\begin{lstlisting}[style=Matlab-editor]
+    %funcion 1 fx
+    x = [Px(1), Px(2)];
+    y = [Py(1), Py(2)];
+    x1= Px(1) : delta : Px(2);
+    y1= spline(x, y, x1);
+\end{lstlisting}
+
+Siguiendo con el código, una vez que terminamos las siete funciones, creamos dos nuevas matrices $x$ y $y$ en las que guardamos las siete funciones que creamos. En otras palabras el contenido de estas matrices va desde $x_1$ a $x_7$ y desde $y_1$ a $y_7$ respectivamente. 
+
+Ya con estas matrices definitivas pudimos trazar la figura en 2D y 3D. A continuación el código utilizado para cada una y sus explicaciones. 
+
+\begin{lstlisting}[style=Matlab-editor]
+    %grafica 2D
+    subplot(1, 2, 1)
+    plot(X, Y, 'r', 'LineWidth', 3)
+    xlim([0 15])
+    ylim([0 15])
+    camroll(90)
+\end{lstlisting}
+
+En estás líneas de código, primero usamos la función subplot para dividir la pantalla donde se muestran las gráficas y tomamos el lado izquierdo para la gráfica 2D, después la función plot con las matrices mencionadas anteriormente y detalles como el color rojo o el grueso de la línea, luego las líneas xlim y ylim marcan los límites o tamaño de donde se graficara la figura y por último la función camroll gira la figura 90 grados para verla en vertical y no en horizontal.\\
+
+\begin{lstlisting}[style=Matlab-editor]
+    %grafica 3d
+    subplot(1, 2, 2)
+    cylinder(Y)
+\end{lstlisting}
+
+Aquí empezamos con la misma línea que la sección pasada pero ahora tomando el lado derecho y después la función cylinder, la cual toma las $y$ de la figura y las hace girar en círculo. Este es el responsable de que se cree el sólido de revolución.

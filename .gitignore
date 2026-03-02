@@ -1,3 +1,6 @@
 __logs__/
 __texcache__/
 output/
+_resultadosFinales/
+__pycache__/
+__deprecated__/

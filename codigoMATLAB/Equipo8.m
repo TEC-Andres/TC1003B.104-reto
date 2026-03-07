@@ -163,7 +163,7 @@ f2 = @(x) pi*(P2(1)*x.^5 + P2(2)*x.^4 + P2(3)*x.^3 + P2(4)*x.^2 + P2(5)*x + P2(6
 f3 = @(x) pi*(P3(1)*x.^2 + P3(2)*x + P3(3)).^2;
 f4 = @(x) pi*(P4(1)*x+P4(2)).^2; 
 f5 = @(x) pi*(P5(1)*x.^3 + P5(2)*x.^2 + P5(3)*x + P5(4)).^2;
-f6 =  @(x) pi*(P6(1)*x.^3 + P6(2)*x.^2 + P6(3)*x + P6(4)).^2;
+f6 = @(x) pi*(P6(1)*x.^3 + P6(2)*x.^2 + P6(3)*x + P6(4)).^2;
 f7 = @(x) pi *(P7(1)*x.^4 + P7(2)*x.^3 + P7(3)*x.^2 + P7(4)*x + P7(5)).^2;
 
 
@@ -395,18 +395,3 @@ disp("volumen resultante: "+vResultante + "cm^3")
 disp("masa resultante: " +masaResultante + " kg")
 costoR = precio * masaResultante;
 disp("costo final: $"+costoR)
-
-% Print all defined functions in LaTeX form
-syms x
-funcs = {f1, f2, f3, f4, f5, f6, f7, fD0, fD1, fD2, fD3, fD4, fD5, fD6};
-names = {'f1','f2','f3','f4','f5','f6','f7','fD0','fD1','fD2','fD3','fD4','fD5','fD6'};
-for k = 1:numel(funcs)
-    % Try to convert the anonymous function to symbolic
-    try
-        f_sym = formula(funcs{k});
-    catch
-        f_sym = funcs{k}(x);
-    end
-    latex_str = latex(f_sym);
-    fprintf('\n%s(x):\n%s\n', names{k}, latex_str);
-end

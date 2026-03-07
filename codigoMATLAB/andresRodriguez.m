@@ -1,7 +1,7 @@
 % andresRodriguez.m
 % Hace un sólido de revolución a partir de la curva dada por un array de puntos. Se crea creará dos figuras, una en 2D y la otra en 3D.
 % Andrés Rodríguez Cantú
-clear; clc;
+clear; clc; clf;
 
 GROSOR = 0.4;
 DENSIDADVIDRIO = 2.5; % g/cm^3
@@ -40,13 +40,21 @@ POriginalY = [
     1.1039713986074; % Py
 ];
 
-% PDELTAY
-PDeltaY = POriginalY - GROSOR;
+% % PDELTAY
+% PDeltaY = POriginalY-GROSOR;
+m = gradient(POriginalY, POriginalX);
+caida_vertical = GROSOR .* sqrt(1 + m.^2);
+PDeltaY = POriginalY - caida_vertical;
+PDeltaY = max(0, PDeltaY);
 
 hold on; 
 delta = 0.01;
-x = [POriginalX(1), POriginalX(2), POriginalX(3), POriginalX(4), POriginalX(5), POriginalX(6), POriginalX(7), POriginalX(8), POriginalX(9), POriginalX(10), POriginalX(11), POriginalX(12), POriginalX(13), POriginalX(14)];
-y = [POriginalY(1), POriginalY(2), POriginalY(3), POriginalY(4), POriginalY(5), POriginalY(6), POriginalY(7), POriginalY(8), POriginalY(9), POriginalY(10), POriginalY(11), POriginalY(12), POriginalY(13), POriginalY(14)];
+x = zeros(1, numel(POriginalX)); % [POriginalX(1), ... POriginalX(14)]
+y = zeros(1, numel(POriginalY)); % [POriginalY(1), ... POriginalY(14)]
+for k = 1:numel(POriginalX)
+    x(k) = POriginalX(k);
+    y(k) = POriginalY(k);
+end
 xALL = POriginalX(1):delta:POriginalX(14);
 yALL = spline(x,y,xALL);
 

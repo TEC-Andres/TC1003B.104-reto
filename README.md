@@ -7,6 +7,12 @@
 ## Objetivo del proyecto:
 Modelar e imprimir un prototipo un producto inovador utilizando sólidos de revolución utilizando tecnologías como MATLAB, Geogebra y la impresión 3D.
 
+## Estructura y nomenclatura de archivos:
+La estructura de archivos esta organizada de la siguiente manera:
+```
+
+```
+
 ## Liga de descarga del proyecto:
 Última versión del proyecto:
 [Release de Semana III](https://github.com/TEC-Andres/TC1003B.104-reto/releases/tag/Avance)

@@ -4,3 +4,5 @@ output/
 _resultadosFinales/
 __pycache__/
 __deprecated__/
+_notes/
+*.asv

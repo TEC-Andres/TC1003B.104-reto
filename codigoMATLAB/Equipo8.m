@@ -130,7 +130,6 @@ hold on
 theta = linspace(0, 2*pi, 72);
 [thetaGridOuter, xGridOuter] = meshgrid(theta, X);
 radiusGridOuter = repmat(Y(:), 1, numel(theta));
-% rotate so axis of revolution aligns with Z: axial coordinate = X
 newXOuter = radiusGridOuter .* cos(thetaGridOuter);
 newYOuter = radiusGridOuter .* sin(thetaGridOuter);
 newZOuter = xGridOuter;
@@ -140,7 +139,6 @@ surf(newXOuter, newYOuter, newZOuter, ...
     'EdgeColor', 'none');
 view(3)
 axis equal
-% after rotation, axial limits go on Z
 xlim([-yMax yMax])
 ylim([-yMax yMax])
 zlim([xMin xMax])
@@ -334,8 +332,8 @@ surf(newXInner, newYInner, newZInner, ...
     'FaceAlpha', 0.3, ...
     'EdgeColor', 'none');
 view(3)
+zlim([-1 15])
 axis equal
-% keep same shared limits after rotation
 xlim([-yMax yMax])
 ylim([-yMax yMax])
 zlim([xMin xMax])
@@ -385,18 +383,15 @@ densidad = 1.25; %g/cm^3
 
 %masa
 masaD = vDt * densidad;
-%disp("La masa total del florero es " + masa2 + " gramos")
+%disp("La masa total del portavasos es " + masa2 + " gramos")
 
 %masa en kg
 masaDEnKg = masaD/1000;
 %disp("Masa en kg: "+ masaEnKg2)
 
 %precio y costo total
-precio = 200; 
+precio = 300; 
 costo2 = precio * masaDEnKg;
-
-%disp("El costo total del florero es de: $" + costo2)
-
 
 vResultante = vt - vDt;
 masaResultante = masaEnKg - masaDEnKg;

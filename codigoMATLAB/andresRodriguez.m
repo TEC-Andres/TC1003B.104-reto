@@ -40,12 +40,22 @@ POriginalY = [
     1.1039713986074; % Py
 ];
 
-% % PDELTAY
-% PDeltaY = POriginalY-GROSOR;
-m = gradient(POriginalY, POriginalX);
-caida_vertical = GROSOR .* sqrt(1 + m.^2);
-PDeltaY = POriginalY - caida_vertical;
-PDeltaY = max(0, PDeltaY);
+PDeltaY = [
+    0; % CDy - Ignorado
+    0; % DDy - Ignorado
+    1.0561118074327-GROSOR; % EDy
+    1.2306778260165-GROSOR; % FDy
+    1.3052786886592-GROSOR; % GDy
+    1.9549928697846-GROSOR; % HDy
+    2.2797191365011-GROSOR; % IDy
+    1.4095374520525-GROSOR; % JDy
+    1.2146837368122-GROSOR; % KDy
+    1.1703988015303-GROSOR; % LDy
+    1.2058267497558-GROSOR; % MDy
+    1.3741095038270-GROSOR; % NDy
+    1.2545401785659-GROSOR; % ODy
+    1.1039713986074-GROSOR; % PDy
+];
 
 hold on; 
 delta = 0.01;
@@ -97,10 +107,12 @@ hold off;
 % PLOT 2D DELTA
 subplot(1,2,1);
 hold on;
-plot(xALL, spline(x,PDeltaY,xALL), '--', 'Color', [0.5 0.5 0.5], 'LineWidth', 1.5);
+% Limitar valores negativos a 0 para que sea línea recta pura
+yy2 = max(0, spline(x,PDeltaY,xALL)); 
+plot(xALL, yy2, '--', 'Color', [0.5 0.5 0.5], 'LineWidth', 1.5);
+
 % rellenar área entre original y desplazada para visualizar grosor
 yy1 = yALL;
-yy2 = spline(x,PDeltaY,xALL);
 fill([xALL, fliplr(xALL)], [yy1, fliplr(yy2)], [0.8 0.8 1], 'FaceAlpha', 0.3, 'EdgeColor', 'none');
 xlim([0 6.5]);
 ylim([0 2.5]);
@@ -126,7 +138,8 @@ end
 subplot(1, 2, 2);
 hold on;
 hBefore = findobj(gca, 'Type', 'surface');
-cylinder(spline(x, PDeltaY, xALL));
+% Limitar a 0 para evitar cilindros invertidos en la base
+cylinder(max(0, spline(x, PDeltaY, xALL)));
 hAll = findobj(gca, 'Type', 'surface');
 hDelta = setdiff(hAll, hBefore); 
 if ~isempty(hDelta)
@@ -173,13 +186,16 @@ P4 = vander(POriginalX(7:8))\PDeltaY(7:8);
 P5 = vander(POriginalX(8:10))\PDeltaY(8:10);
 P6 = vander(POriginalX(10:12))\PDeltaY(10:12);
 P7 = vander(POriginalX(12:14))\PDeltaY(12:14);
-f1 = @(x) pi*((P1(1)*x.^2 + P1(2)*x + P1(3)).^2);
+
+% Aplicar max(0, ...) en f1 para no sumar volumen de curvas negativas al cuadrado
+f1 = @(x) pi*(max(0, P1(1)*x.^2 + P1(2)*x + P1(3)).^2);
 f2 = @(x) pi*((P2(1)*x.^2 + P2(2)*x + P2(3)).^2);
 f3 = @(x) pi*((P3(1)*x.^2 + P3(2)*x + P3(3)).^2);
 f4 = @(x) pi*((P4(1)*x + P4(2)).^2);
 f5 = @(x) pi*((P5(1)*x.^2 + P5(2)*x + P5(3)).^2);
 f6 = @(x) pi*((P6(1)*x.^2 + P6(2)*x + P6(3)).^2);
 f7 = @(x) pi*((P7(1)*x.^2 + P7(2)*x + P7(3)).^2);
+
 v1 = integral(f1, POriginalX(1), POriginalX(3));
 v2 = integral(f2, POriginalX(3), POriginalX(5));
 v3 = integral(f3, POriginalX(5), POriginalX(7));
@@ -192,4 +208,4 @@ VDelta = v1 + v2 + v3 + v4 + v5 + v6 + v7;
 VTotal = VOriginal-VDelta;
 masa = DENSIDADVIDRIO*VTotal;
 
-fprintf('El volúmen de nuestro objeto es %.4f cm^3\nY la masa es %.4f g\n', VTotal, masa);
+fprintf('El volumen de nuestro objeto es %.4f cm^3\nY la masa es %.4f g\n', VTotal, masa);

@@ -1,0 +1,125 @@
+\inicializarSeccion{Cálculo de Volúmen y Costo}
+\tab El proceso para sacar el volumen del sólido necesitó de varios pasos que se describirán a continuación.
+
+\tab En la última parte nos quedamos donde obtuvimos las grafica 3D, ahora empezamos a trabajar en las funciones que componen la línea exterior (la original). Primero usaremos la interpolación para sacar los coeficientes que tendrá cada función de esta línea, para eso usamos la función vander y le pasamos los puntos de la matriz $P_x$ que queremos que use (los puntos que correspondan a la función a la cual le queremos sacar los coeficientes), lo que hace vander es que con esos puntos crea una matriz vandermonde, la cual es una matriz donde cada fila corresponde a un punto $x$ y cada columna es una potencia de $x$. A continuación una foto del resultado de la función vander para nuestra función 7 que requiere 5 coeficientes: 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/vandermonde.png}}
+    \caption{Matriz vandermonde donde muestra los cinco coeficientes de nuestra septima función.}
+\end{figure}
+
+
+\tab Del otro lado tenemos la matriz $P_y$ con los mismos puntos que utiliza la función que queremos pero obviamente de la matriz que contiene los puntos de $y$, y en medio de estas dos matrices usamos el operador \texttt{\textbackslash}, el cual solucionará el sistema para finalmente obtener una matriz con los coeficientes para la función.
+
+\tab Así se ve la línea de código completa, hacemos una línea de código por cada función que tenemos y a cada matriz lo asignamos a una variable $P_1, P_2, P_3\dots$:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\nat{parte4/coeficientes.png}}
+    \caption{Línea de código para obtener los coeficientes de cada función.}
+\end{figure}
+
+\tab Después con estos coeficientes creamos las funciones en MATLAB. Para esto, primero debemos ver cuántos coeficientes tiene la función, y a la cantidad de coeficientes le restamos uno y ese será el grado de la función. Por ejemplo, si la función tiene cuatro coeficientes su grado será tres.
+
+\tab Para cada función hacemos su forma dependiendo de su grado y traemos los coeficientes de las matrices de coeficientes que acabamos de crear en el paso anterior, usando la matriz que corresponda con el índice que corresponda.
+
+\tab Recordando que, para una función $f:\mathbb{R} \to \mathbb{R}$, el sólido de revolución se obtiene al rotar la gráfica de $f$ alrededor del eje $x$, y el volumen del sólido de revolución se calcula usando la fórmula:
+
+\begin{equation}
+V = \pi \int_{a}^{b} [f(x)]^2 dx
+\end{equation}
+
+Por ende:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/funcionesAnonimasSolidoDeRevolucion.png}}
+    \caption{Definición de las siete funciones para evaluarlas como sólido de revolución.}
+\end{figure}
+
+\tab Una vez que tenemos las funciones listas y que cumplen con la fórmula de la integral, sigue integrarlas y con esto tendremos el volumen de cada función. Para esto usamos la función integral y como parámetros le mandamos la función y los puntos de inicio y fin. Repetimos esto para cada función y lo asignamos a variables llamadas v1, v2, v3\dots para cada función respectivamente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/volumenOriginal.png}}
+    \caption{Lineas en donde se integra las funciones con el dominio de dicha función.}
+\end{figure}
+
+\tab Ya que tenemos los volúmenes individuales simplemente los sumamos todos y así obtenemos el volumen total (para la función del exterior), el cual resultará en cm$^3$ ya que la escala que usamos es de cm y el volumen tiene unidades cúbicas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/sumaVolumenes.png}}
+    \caption{Suma de los volúmenes individuales para obtener el volumen total.}
+\end{figure}
+
+\tab Ahora, para la línea del interior, primero vamos a geogebra y creamos nuevos puntos por debajo de los originales. Nosotros dejamos los puntos en x igual pero en y los desplazamos un cm hacia abajo, para darle un grosor adecuado al producto. Después creamos las mismas funciones que teníamos en la línea exterior pero con los nuevos puntos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/puntosDelBoceto.png}}
+    \caption{Línea interior y exterior con sus respectivos puntos.}
+\end{figure}
+
+\tab Ahora lo que tenemos que hacer es básicamente todo el código que hicimos para la función exterior de nuevo, pero con los nuevos puntos. Para esto empezamos desde definir matrices con los puntos en $x$ y puntos en $y$ hasta el último paso del código recién explicado. Para dichas matrices las nombramos como $P_{Dx}$ y $P_{Dy}$; la $D$ es referencia a delta, o sea un cambio en el punto. 
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=0.65\textwidth]{\nat{parte4/puntosPDx.png}}
+        \caption{Puntos $P_{Dx}$ de la línea interior.}
+        \label{fig:puntosPDx}
+    \end{minipage}\hspace{0.02\textwidth}%
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=0.65\textwidth]{\nat{parte4/puntosPDy.png}}
+        \caption{Puntos $P_{Dy}$ de la línea interior.}
+        \label{fig:puntosPDy}
+    \end{minipage}
+\end{figure}
+
+\tab Después definimos las funciones en matlab tal y como las definimos con los puntos originales, mismo formato y mismas 4 líneas de código pero ahora con las matrices delta. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/funcionDelta.png}}
+    \caption{Funciones del interior definidas con los puntos delta.}
+\end{figure}
+
+\tab Con todas las funciones definidas las metemos en dos matrices llamadas XD y YD para graficarlas en 2D y 3D de la misma manera que las originales.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/graficasCode.png}}
+    \caption{Código de las gráficas 2D y 3D.}
+\end{figure}
+
+\tab Ya con esto, empezamos la segunda parte del código, donde sacamos los coeficientes, creamos las funciones con su respectivo grado para en esa misma línea multiplicarlas por pi y elevarlas al cuadrado y posterior a esto sacar el volumen individual con la función integral para al final sumarlos todos y obtener el volumen delta total. Todos estos pasos fueron aplicados y explicados para la línea exterior de la figura, por lo que se omitió el detalle esta segunda ocasión.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/segundasFuncionesAnonimas.png}}
+    \caption{Código para obtener coeficientes y definción de funciónes de solidos de revolución.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/terminosIntegrales.png}}
+    \caption{Código para calcular el solido de revolución por cada función.}
+\end{figure}
+
+\tab Ahora sigue la parte de encontrar la masa y posteriormente el precio. Para esto investigamos la densidad del material y guardamos el valor en una variable. Después despejamos la fórmula que dice $d = \frac{m}{V}$ para masa, nos queda $m = d \cdot V$. Siempre cuidando las unidades, con este valor investigamos el precio del material y al multiplicarlo por la masa obtenemos el precio.
+
+\tab En nuestro caso la densidad del material es de 1.25 g/cm$^3$, y para el volumen final simplemente restamos el volumen de la línea exterior y el volumen de la línea interior, lo cual nos da el volumen resultante en cm$^3$,  una vez que tenemos estos datos y la fórmula anterior despejada, procedemos a sacar la masa del producto, multiplicando el volumen cm$^3$ * densidad g/cm$^3$ lo cual nos da nuestro resultado en gramos. Pero como el material se vende por kilo, convertimos esta masa a kilos dividiendo entre mil. 
+
+\tab Como último paso sacamos el costo investigando el precio (el cual es de 300 pesos/kg) y lo multiplicamos por la cantidad de kilos que tenemos, dando como resultado el costo en pesos.
+
+Imprimimos los 3 resultados requeridos y con esto finalizamos el código: 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{\nat{parte4/printCodigoFinal.png}}
+    \caption{Código para sacar la masa y el precio del producto.}
+\end{figure}

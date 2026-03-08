@@ -10,7 +10,23 @@ Modelar e imprimir un prototipo un producto inovador utilizando sólidos de revo
 ## Estructura y nomenclatura de archivos:
 La estructura de archivos esta organizada de la siguiente manera:
 ```
-
+C:.
+├───codigoMATLAB
+├───documento
+│   ├───librerias
+│   ├───recursos
+│   │   ├───jpg
+│   │   │   └───parte1
+│   │   ├───png
+│   │   │   ├───parte2
+│   │   │   └───parte3
+│   │   └───svg
+│   └───secciones
+│       ├───documento
+│       ├───parte1
+│       ├───parte2
+│       └───parte3
+├───output
 ```
 
 ## Liga de descarga del proyecto:
